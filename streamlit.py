@@ -18,7 +18,7 @@ def get_model():
     return model
 
 
-st.header("🔌💡:blue[Tüketilecek Elektrik Tahmini]🧑‍🔧")
+st.header("🔌💡:blue[Tüketilecek Güç Tahmini]🧑‍🔧")
 tab_home, tab_vis,tab_model = st.tabs(["Anasayfa","Grafikler","Model"])
 
 #TAB HOME#
@@ -26,7 +26,7 @@ tab_home, tab_vis,tab_model = st.tabs(["Anasayfa","Grafikler","Model"])
 column_hans, column_dataset = tab_home.columns(2,gap = "large")
 
 
-column_hans.subheader(":gray[Elektrik Tüketimini Tahmin Etmenin Faydaları]")
+column_hans.subheader(":gray[Güç Tüketiminin Doğru Tahmin Edilmesinin Faydaları]")
 column_hans.markdown("""
 * **Enerji Üretimi ve Tedarik Planlaması:** Elektrik tüketimini doğru bir şekilde tahmin etmek, enerji üreticilerinin ve dağıtıcılarının ihtiyaç duyulan enerjiyi etkin bir şekilde üretmeleri ve dağıtmaları için hayati öneme sahiptir. Bu, hem aşırı üretimi hem de enerji eksikliğini önlemeye yardımcı olur.
 
@@ -48,7 +48,7 @@ column_hans.markdown("""
 
 
 column_dataset.subheader("Veri Seti Hakkında")
-column_dataset.markdown("Almanya'nın 2015-2020 yılları arasında 5 yıllık güç tüketim verisi vardır.Bu projede zaman serileriyle 2020 yılı aylarında ne kadar tüketim olabileceği tahminini yapacağız")
+column_dataset.markdown("Almanya'nın 2015-2019 yılları arasında 5 yıllık güç tüketim verisi vardır.Bu verilerle zaman serilerini kullanarak gelecek yıllarda ne kadar güç tüketimi olabileceğinin tahminini yapacağız")
 #  Local URL: http://localhost:8501
 #Network URL: http://192.168.1.36:8501
 df = get_data()
@@ -128,5 +128,10 @@ if tab_model.button("Tahmin et!"):
     prediction_value = prediction.iloc[0]
     if isinstance(prediction_value, pd.Series):
         prediction_value = prediction_value.iloc[0]  # Eğer Seri ise ilk elemanı al
-    tab_model.success(f"Tahmin edilen güç tüketimi miktarı: {prediction_value}")
+
+    # kW cinsinden tahmin değerini GW'ye çevir
+    prediction_value_in_gw = prediction_value / 1000000  # 1 GW = 1.000.000 kW
+
+    # Tahmin edilen güç tüketimi miktarını GW olarak göster
+    tab_model.success(f"Tahmin edilen güç tüketimi miktarı: {prediction_value_in_gw} GW")
     tab_model.balloons()
